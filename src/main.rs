@@ -3,14 +3,15 @@ use num::{BigUint, CheckedAdd};
 
 #[memoize]
 pub fn fib(nth: u32) -> Option<BigUint> {
-    return match nth {
-        nth if nth <= 1 => Some(BigUint::from(1 as u32)),
-        _ => Some(
-                fib(nth - 2)
-                    .unwrap_or_else(|| BigUint::from(0 as u32))
-                    .checked_add(&fib(nth - 1)
+    if nth <= 1 {
+        Some(BigUint::from(1 as u32))
+    } else {
+        Some(
+            fib(nth - 2)
+                .unwrap_or_else(|| BigUint::from(0 as u32))
+                .checked_add(&fib(nth - 1)
                     .unwrap_or_else(|| BigUint::from(0 as u32)))
-                ).unwrap()
+            ).unwrap()
     }
 }
 
