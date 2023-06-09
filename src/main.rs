@@ -3,10 +3,9 @@ use num::{BigUint, CheckedAdd};
 
 #[memoize]
 pub fn fib(nth: u32) -> Option<BigUint> {
-    if nth <= 1 {
-        Some(BigUint::from(1 as u32))
-    } else {
-        Some(
+    match nth {
+        0..=1 => Some(BigUint::from(1 as u32)),
+        _     =>Some(
             fib(nth - 2)
                 .unwrap_or_else(|| BigUint::from(0 as u32))
                 .checked_add(&fib(nth - 1)
