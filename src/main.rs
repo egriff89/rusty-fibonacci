@@ -1,17 +1,24 @@
-use memoize::memoize;
-use num::{BigUint, CheckedAdd};
+use anyhow::bail;
+use num::BigInt;
 
-#[memoize]
-pub fn fib(nth: u32) -> Option<BigUint> {
-    match nth {
-        0..=1 => Some(BigUint::from(1 as u32)),
-        _     =>Some(
-            fib(nth - 2)
-                .unwrap_or_else(|| BigUint::from(0 as u32))
-                .checked_add(&fib(nth - 1)
-                    .unwrap_or_else(|| BigUint::from(0 as u32)))
-            ).unwrap()
+fn fib(nth: i32) -> anyhow::Result<BigInt> {
+    
+    if nth == 0 {
+        return Ok(BigInt::from(0))
+    } else if nth < 0 {
+        bail!("")
     }
+
+    let mut a: BigInt = BigInt::from(1);
+    let mut b: BigInt = BigInt::from(1);
+
+    for _ in (1..nth).enumerate() {
+        let temp: BigInt = a;
+        a = b.clone();
+        b = b.checked_add(&temp).unwrap();
+    }
+
+    return Ok(a);
 }
 
 fn main() {
@@ -19,7 +26,11 @@ fn main() {
     let numbers: &[String] = &args[1..];
     
     for num in numbers {
-        let n: u32 = num.trim().parse().unwrap();
-        println!("fib({}): {:?}", n, fib(n).unwrap());
+        let nth: i32 = num.trim().parse().unwrap();
+        
+        match fib(nth) {
+            Ok(n) => println!("fib({}): {:?}", nth, n),
+            Err(_)        => eprintln!("Cannot be negative!")
+        }
     }
 }
