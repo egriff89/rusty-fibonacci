@@ -29,8 +29,8 @@ fn main() {
         let nth: i32 = num.trim().parse().unwrap();
         
         match fib(nth) {
-            Ok(n) => println!("fib({}): {:?}", nth, n),
-            Err(_)        => eprintln!("Cannot be negative!")
+            Ok(n)  => println!("fib({}): {:?}", nth, n),
+            Err(_) => eprintln!("Cannot be negative!")
         }
     }
 }
