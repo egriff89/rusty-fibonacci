@@ -14,7 +14,7 @@ fn fib(nth: i32) -> Result<BigInt> {
     
     match nth.cmp(&0) {
         Ordering::Equal   => Ok(BigInt::from(0)),
-        Ordering::Less    => bail!(""),
+        Ordering::Less    => bail!("Number cannot be negative!"),
         Ordering::Greater => {
             let mut a: BigInt = BigInt::from(1);
             let mut b: BigInt = BigInt::from(1);
@@ -34,6 +34,6 @@ fn main() {
 
     match fib(nth) {
         Ok(n)  => println!("fib({}): {:?}", nth, n),
-        Err(_) => eprintln!("Cannot be negative!")
+        Err(e) => eprintln!("ERROR: {}", e)
     }
 }
