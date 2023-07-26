@@ -1,36 +1,39 @@
-use anyhow::bail;
+use clap::Parser;
 use num::BigInt;
+use std::cmp::Ordering;
+use anyhow::{Result, bail};
 
-fn fib(nth: i32) -> anyhow::Result<BigInt> {
+#[derive(Parser, Debug)]
+struct Args {
+    // #[arg(short = 'n', long = "number", allow_hyphen_values = true)]
+    #[arg(allow_hyphen_values = true)]
+    number: i32
+}
+
+fn fib(nth: i32) -> Result<BigInt> {
     
-    if nth == 0 {
-        return Ok(BigInt::from(0))
-    } else if nth < 0 {
-        bail!("")
+    match nth.cmp(&0) {
+        Ordering::Equal   => Ok(BigInt::from(0)),
+        Ordering::Less    => bail!(""),
+        Ordering::Greater => {
+            let mut a: BigInt = BigInt::from(1);
+            let mut b: BigInt = BigInt::from(1);
+
+            for _ in 1..nth {
+                let temp: BigInt = a;
+                a = b.clone();
+                b = b.checked_add(&temp).unwrap();
+            }
+            Ok(a)
+        }
     }
-
-    let mut a: BigInt = BigInt::from(1);
-    let mut b: BigInt = BigInt::from(1);
-
-    for _ in (1..nth).enumerate() {
-        let temp: BigInt = a;
-        a = b.clone();
-        b = b.checked_add(&temp).unwrap();
-    }
-
-    return Ok(a);
 }
 
 fn main() {
-    let args: Vec<String> = std::env::args().collect();
-    let numbers: &[String] = &args[1..];
-    
-    for num in numbers {
-        let nth: i32 = num.trim().parse().unwrap();
-        
-        match fib(nth) {
-            Ok(n)  => println!("fib({}): {:?}", nth, n),
-            Err(_) => eprintln!("Cannot be negative!")
-        }
+    let nth = Args::parse().number;
+
+    match fib(nth) {
+        Ok(n)  => println!("fib({}): {:?}", nth, n),
+        Err(_) => eprintln!("Cannot be negative!")
     }
 }
