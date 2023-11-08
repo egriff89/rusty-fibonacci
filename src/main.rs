@@ -5,9 +5,10 @@ use std::cmp::Ordering;
 use anyhow::bail;
 
 #[derive(Parser, Debug)]
+#[command(about)]
 struct Args {
-    // #[arg(short = 'n', long = "number", allow_hyphen_values = true)]
-    #[arg(allow_hyphen_values = true)]
+    // The number in the sequence to calculate
+    #[arg(short, long, default_value_t = 0, allow_hyphen_values = true)]
     number: i32
 }
 
@@ -33,7 +34,7 @@ fn main() {
     let nth = Args::parse().number;
 
     match fib(nth) {
-        Ok(n)  => println!("fib({}): {:?}", nth, n),
-        Err(e) => eprintln!("ERROR: {}", e)
+        Ok(n)  => println!("{n}"),
+        Err(e) => eprintln!("ERROR: {e}")
     }
 }
